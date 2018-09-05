@@ -1,15 +1,27 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <template v-if="bip39PP">
+      <MainWallet/>
+    </template>
+    <template v-else>
+      <EnterWallet/>
+    </template>
+
+   
   </div>
 </template>
 
 <script>
-import CreateWallet from "./components/CreateWallet";
+import MainWallet from "./components/MainWallet";
+import EnterWallet from "./components/EnterWallet";
 export default {
   name: "App",
-  components: { CreateWallet }
+  components: { MainWallet, EnterWallet },
+  computed: {
+    bip39PP() {
+      return this.$store.getters.walletPPExists;
+    }
+  }
 };
 </script>
 

@@ -1,9 +1,9 @@
 export const loadState = () => {
   try {
-    const serializedPPState = localStorage.getItem('encrypted_pp');
-    const serializedADDRState = localStorage.getItem('address');
+    const serializedPPState = window.localStorage.getItem('bip39phrase');
+    // const serializedADDRState = localStorage.getItem('address');
 
-    if (serializedPPState || serializedADDRState === null) {
+    if (serializedPPState === null) {
       return undefined;
     }
     return JSON.parse(serializedPPState);
