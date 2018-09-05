@@ -1,10 +1,13 @@
 <template>
     <div>
         <h1>
-            Enter Existing Wallet
+            Welcome to my Bitcoin Wallet
         </h1>
-        <p>Enter exisitng 12-word phrase</p>
-          
+        <button id="show-modal" @click="showModal = true">Create new wallet</button>
+        <!-- use the modal component, pass in the prop -->
+        <modal v-if="showModal" @close="showModal = false">
+        </modal>
+          <p>Enter exisitng 12-word phrase</p>
         <form
   id="existing"
  
@@ -34,6 +37,7 @@
     >
 
 </form>
+
     </div>
 </template>
 
@@ -41,5 +45,12 @@
 <script>
 import CreateWallet from "./CreateWallet";
 import { generateNewBip39 } from "../logic/index";
-export default {};
+export default {
+  components: { modal: CreateWallet },
+  data() {
+    return {
+      showModal: false
+    };
+  }
+};
 </script>

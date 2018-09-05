@@ -6,8 +6,6 @@
     <template v-else>
       <EnterWallet/>
     </template>
-
-   
   </div>
 </template>
 
