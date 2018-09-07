@@ -12,6 +12,8 @@
 <script>
 import MainWallet from "./components/MainWallet";
 import EnterWallet from "./components/EnterWallet";
+import { loadState } from "./localStorage";
+
 export default {
   name: "App",
   components: { MainWallet, EnterWallet },
@@ -19,6 +21,12 @@ export default {
     bip39PP() {
       return this.$store.getters.walletPPExists;
     }
+  },
+  mounted() {
+    // let passphrase = loadState();
+    // loadState() not working, below seems to work
+    this.$store.dispatch("loadPassPhrase", localStorage.bip39phrase);
+    this.$store.dispatch("loadAddress", localStorage.address);
   }
 };
 </script>

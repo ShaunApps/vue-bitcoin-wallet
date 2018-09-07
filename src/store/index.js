@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {
-  loadState
+  loadState,
+  saveState
 } from '../localStorage'
 
 Vue.use(Vuex)
@@ -9,7 +10,8 @@ Vue.use(Vuex)
 // root state object.
 // each Vuex instance is just a single state tree.
 const state = {
-  bip39phrase: ''
+  bip39phrase: '',
+  address: ''
 
 }
 
@@ -19,30 +21,52 @@ const state = {
 // mutations must be synchronous and can be recorded by plugins
 // for debugging purposes.
 const mutations = {
-  loadPassPhase(state, passphrase) {
+  loadPassPhrase(state, passphrase) {
     state.bip39phrase = passphrase
   },
 
-  loadState(state) {
-
+  loadAddress(state, address) {
+    state.address = address
   },
-  saveRoot(state, root) {
-    state.encryptedRoot = root;
+
+  savePassPhrase(state, passphrase) {
+    // save phrase in state
+    state.bip39phrase = passphrase;
+    // might not be best place to put this
+    // saves phrase to local storage
+    saveState(state, 'bip39phrase', state.bip39phrase);
+  },
+
+  saveAddress(state, address) {
+    state.address = address;
+    saveState(state, 'address', state.address)
+
   }
 }
 
 // actions are functions that cause side effects and can involve
 // asynchronous operations.
 const actions = {
-  loadPassPhase: ({
+  loadPassPhrase: ({
     commit
-  }) => {
-    let passphrase = loadState();
+  }, passphrase) => {
     commit('loadPassPhrase', passphrase)
   },
-  saveRoot: ({
+  savePassPhrase: ({
     commit
-  }) => commit('saveRoot')
+  }, passphrase) => {
+    commit('savePassPhrase', passphrase)
+  },
+  loadAddress: ({
+    commit
+  }, address) => {
+    commit('loadAddress', address)
+  },
+  saveAddress: ({
+    commit
+  }, address) => {
+    commit('saveAddress', address)
+  }
 }
 
 // getters are functions

@@ -1,3 +1,4 @@
+
 <template id="modal-template">
   <transition name="modal">
     <div class="modal-mask">
@@ -7,17 +8,15 @@
             Create new wallet
         </h1>
         <p>Create new bip39 wallet 12-word phrase</p>
-        <textarea v-model="phrase" >{{phrase}}</textarea>
+        <textarea v-model="phrase" v-bind:placeholder="phrase"></textarea>
           
-
-          <div class="modal-footer">
-            <slot name="footer">
-              default footer
-              <button class="modal-default-button" @click="$emit('close')">
+              <button class="modal-default-button" @click="save">
                 OK
               </button>
-            </slot>
-          </div>
+              <button class="modal-default-button" @click="$emit('close')">
+                Cancel
+              </button>
+            
         </div>
       </div>
     </div>
@@ -27,17 +26,29 @@
 
 
 <script>
-import { generateNewBip39 } from "../logic/index";
+import { generateNewBip39, generateAddress } from "../logic/index";
+import { mapActions } from "vuex";
 export default {
-  name: "modal",
   data() {
     return {
       phrase: generateNewBip39()
     };
+  },
+  // computed: {
+  //   address: function() {
+  //     let bip39 = this.phrase;
+  //     return generateAddress(bip39);
+  //   }
+  // },
+  methods: {
+    save: function() {
+      let address = generateAddress(this.phrase);
+      this.$store.dispatch("savePassPhrase", this.phrase);
+      this.$store.dispatch("saveAddress", address);
+      this.$emit("close");
+    }
   }
 };
-
-// import { mapActions } from 'vuex'
 
 // export default {
 //   // ...
@@ -56,6 +67,11 @@ export default {
 </script>
 
 <style>
+textarea {
+  width: 300px;
+  height: 150px;
+}
+
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -74,8 +90,8 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
-  margin: 0px auto;
+  width: 450px;
+  margin: 25px auto;
   padding: 20px 30px;
   background-color: #fff;
   border-radius: 2px;

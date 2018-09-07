@@ -1,6 +1,6 @@
 export const loadState = () => {
   try {
-    const serializedPPState = window.localStorage.getItem('bip39phrase');
+    const serializedPPState = localStorage.getItem('bip39phrase');
     // const serializedADDRState = localStorage.getItem('address');
 
     if (serializedPPState === null) {
@@ -13,10 +13,10 @@ export const loadState = () => {
 }
 
 
-export const saveState = (state) => {
+export const saveState = (state, key, item) => {
   try {
-    localStorage.setItem('encrypted_pp', state.pp);
-    localStorage.setItem('address', state.address);
+    localStorage.setItem(key, item);
+    // localStorage.setItem('address', state.address);
   } catch (err) {
     console.log(err);
   }
