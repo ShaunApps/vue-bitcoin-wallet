@@ -69,7 +69,7 @@ export default {
 <style>
 textarea {
   width: 300px;
-  height: 150px;
+  height: 125px;
 }
 
 .modal-mask {

@@ -17,7 +17,9 @@
     "bip32": "^1.0.2",
     "bip39": "^2.5.0",
     "bitcoinjs-lib": "^4.0.1",
+    "blockchain.info": "^2.12.1",
     "bootstrap-vue": "^2.0.0-rc.11",
+    "crypto": "^1.0.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"

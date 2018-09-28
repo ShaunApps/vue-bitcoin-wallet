@@ -1,29 +1,35 @@
 <template>
     <div>
-        <h1>
-            Welcome to my Bitcoin Wallet
-        </h1>
-        <b-btn v-b-modal.modal1>Launch demo modal</b-btn>
-          <b-modal id="modal1" title="Bootstrap-Vue">
-          <h1>
-              Create new wallet
-          </h1>
-          <p>Create new bip39 wallet 12-word phrase</p>
-          <textarea v-model="phrase" v-bind:placeholder="phrase"></textarea>
-       </b-modal>
-
-
-        <button id="show-modal" @click="showModal = true">Create new wallet</button>
-        <!-- use the modal component, pass in the prop -->
-        <modal v-if="showModal" @close="showModal = false">
-        </modal>
-          <p>Enter exisitng 12-word phrase</p>
-
-
-          <b-form-input v-model="text1"
-                  type="text"
-                  placeholder="Enter your name"></b-form-input>
-
+      <b-container>
+        <b-row class="text-center">
+          <b-col></b-col>
+          <b-col cols="8">
+            <div class="wallet-container">
+              <h1>
+                  Welcome to my Bitcoin Wallet
+              </h1>
+              <div>
+                <b-btn v-b-modal.modal1 variant="primary">Create New Wallet</b-btn>
+                <b-modal 
+                  id="modal1" 
+                  title="Get your passphrase"
+                  @ok="handleOk" 
+                  no-close-on-esc no-close-on-backdrop>
+                  <p>We have created a passphrase for you in the box below.
+                  This passphrase lets you access your wallet and the funds it contains.</p>
+                  <textarea v-model="phrase" v-bind:placeholder="phrase"></textarea>
+                </b-modal>
+              </div>
+              <b-card  bg-variant="dark" text-variant="white" title="Log in to your wallet">
+              <b-form-input v-model="text1"
+                        type="text"
+                        placeholder="Enter your 12-word passphrase"></b-form-input>
+              </b-card>
+            </div>
+         </b-col>
+          <b-col></b-col>
+        </b-row>
+      </b-container>
     </div>
 
 </template>
@@ -31,13 +37,38 @@
 
 <script>
 import CreateWallet from "./CreateWallet";
-import { generateNewBip39 } from "../logic/index";
+import { generateNewBip39, generateAddress } from "../logic/index";
 export default {
-  components: { modal: CreateWallet },
   data() {
     return {
-      showModal: false
+      phrase: generateNewBip39()
     };
+  },
+  methods: {
+    handleOk(evt) {
+      // Prevent modal from closing
+      evt.preventDefault();
+      this.save();
+    },
+    save: function() {
+      let address = generateAddress(this.phrase);
+      this.$store.dispatch("savePassPhrase", this.phrase);
+      this.$store.dispatch("saveAddress", address);
+      this.$refs.modal.hide();
+    }
   }
 };
 </script>
+
+<style>
+textarea {
+  width: 300px;
+  height: 85px;
+}
+
+.wallet-container {
+  margin-top: 150px;
+  display: flex;
+  flex-direction: column;
+}
+</style>

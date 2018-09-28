@@ -3,7 +3,7 @@
         <b-navbar toggleable="md" type="dark" variant="info">
 
 
-        <b-navbar-brand href="#">Vue.js Wallet for Bitcoin</b-navbar-brand>
+        <b-navbar-brand href="#">Vue.js Bitcoin Wallet</b-navbar-brand>
 
   
 </b-navbar>
