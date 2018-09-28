@@ -5,6 +5,9 @@ import {
   loadState,
   saveState
 } from '../localStorage'
+import {
+  getUTXOS
+} from '../logic/network'
 
 Vue.use(Vuex)
 
@@ -12,7 +15,13 @@ Vue.use(Vuex)
 // each Vuex instance is just a single state tree.
 const state = {
   bip39phrase: '',
-  address: ''
+  address: '',
+  data: {
+    utxos: {
+      fetching: false,
+      data: {}
+    }
+  }
 
 }
 
@@ -42,12 +51,32 @@ const mutations = {
     state.address = address;
     saveState(state, 'address', state.address)
 
+  },
+
+  /* 
+    ******************
+    UTXOS MUTATIONS
+    ******************
+  */
+
+  fetchingUTXOS(state) {
+    state.data.utxos.fetching = true
+  },
+
+  retrievedUTXOS(state, utxoData) {
+    state.data.utxos.data = utxoData
   }
+
 }
 
 // actions are functions that cause side effects and can involve
 // asynchronous operations.
 const actions = {
+  /* 
+    ******************
+    PASSPHRASE ACTIONS
+    ******************
+  */
   loadPassPhrase: ({
     commit
   }, passphrase) => {
@@ -67,7 +96,21 @@ const actions = {
     commit
   }, address) => {
     commit('saveAddress', address)
-  }
+  },
+
+  /* 
+    ******************
+    UTXOS ACTIONS
+    ******************
+  */
+  async fetchUTXOS({
+    commit
+  }, address) {
+    commit('fetchingUTXOS')
+    let utxoData = await getUTXOS(address)
+    commit('retrievedUTXOS', utxoData)
+  },
+
 }
 
 // getters are functions

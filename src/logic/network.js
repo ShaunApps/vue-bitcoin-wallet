@@ -27,7 +27,7 @@ switch (env.network) {
     throw new Error('Unknown network in env file');
 }
 
-const getUnspentOutputs = (address) => {
+export const getUTXOS = (address) => {
   return c_blockexplorer.getUnspentOutputs(address).then((result) => {
     return {
       utxos: result.unspent_outputs,
@@ -40,16 +40,4 @@ const getTransactions = (addresses) => {
   return c_blockexplorer.getMultiAddress(addresses, {}).then((result) => {
     return Array.isArray(result.txs) ? result.txs : [];
   });
-};
-
-export default {
-  current: c_network,
-  name: env.network,
-  api: {
-    getPrice: getPrice,
-    getFee: getFee,
-    broadcast: broadcast,
-    getUnspentOutputs: getUnspentOutputs,
-    getTransactions: getTransactions,
-  }
 };
