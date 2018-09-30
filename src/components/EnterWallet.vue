@@ -17,11 +17,11 @@
                   no-close-on-esc no-close-on-backdrop>
                   <p>We have created a passphrase for you in the box below.
                   This passphrase lets you access your wallet and the funds it contains.</p>
-                  <textarea v-model="phrase" v-bind:placeholder="phrase"></textarea>
+                  <textarea v-model="generatedPhrase" v-bind:placeholder="generatedPhrase"></textarea>
                 </b-modal>
               </div>
               <b-card  bg-variant="dark" text-variant="white" title="Log in to your wallet">
-              <b-form-input v-model="text1"
+              <b-form-input v-model="enteredPhrase"
                         type="text"
                         placeholder="Enter your 12-word passphrase"></b-form-input>
               </b-card>
@@ -36,12 +36,12 @@
 
 
 <script>
-import CreateWallet from "./CreateWallet";
 import { generateNewBip39, generateAddress } from "../logic/index";
 export default {
   data() {
     return {
-      phrase: generateNewBip39()
+      generatedPhrase: generateNewBip39(),
+      enteredPhrase: ""
     };
   },
   methods: {
@@ -50,11 +50,18 @@ export default {
       evt.preventDefault();
       this.save();
     },
+    // below needs refractoring
     save: function() {
-      let address = generateAddress(this.phrase);
-      this.$store.dispatch("savePassPhrase", this.phrase);
+      let address = generateAddress(this.generatedPhrase);
+      this.$store.dispatch("savePassPhrase", this.generatedPhrase);
       this.$store.dispatch("saveAddress", address);
       this.$refs.modal.hide();
+    },
+    onSubmit(e) {
+      e.preventDefault();
+      let address = generateAddress(this.phrase);
+      this.$store.dispatch("savePassPhrase", this.enteredPhrase);
+      this.$store.dispatch("saveAddress", address);
     }
   }
 };

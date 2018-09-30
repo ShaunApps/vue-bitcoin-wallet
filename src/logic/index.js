@@ -1,6 +1,7 @@
 import bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
 import bip32 from 'bip32'
+import Constants from './constants'
 
 
 
@@ -16,7 +17,8 @@ export const generateAddress = (mnemonic) => {
   const root = bip32.fromSeed(seed);
 
   const derived = root.derivePath("m/0'/0/0");
-  const address = getAddress(derived);
+  const testnet = bitcoin.networks.testnet;
+  const address = getAddress(derived, testnet);
   return address;
 }
 
@@ -25,6 +27,6 @@ export const generateAddress = (mnemonic) => {
 function getAddress(node, network) {
   return bitcoin.payments.p2pkh({
     pubkey: node.publicKey,
-    network
+    network: network
   }).address
 }

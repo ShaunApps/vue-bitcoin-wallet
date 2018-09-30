@@ -31,6 +31,13 @@ const state = {
 // mutations must be synchronous and can be recorded by plugins
 // for debugging purposes.
 const mutations = {
+
+  /* 
+    ******************
+    PASSPHRASE MUTATIONS
+    ******************
+  */
+
   loadPassPhrase(state, passphrase) {
     state.bip39phrase = passphrase
   },
@@ -115,8 +122,9 @@ const actions = {
 
 // getters are functions
 const getters = {
-  walletPPExists: state => state.bip39phrase ? true : false
-
+  walletPPExists: state => state.bip39phrase ? true : false,
+  fetchingUTXOS: state => state.data.utxos.fetching ? true : false,
+  getAddress: state => state.address
 }
 
 // A Vuex instance is created by combining the state, mutations, actions,
