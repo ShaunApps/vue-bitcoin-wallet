@@ -67,7 +67,7 @@ const mutations = {
   */
 
   fetchingUTXOS(state) {
-    state.data.utxos.fetching = true
+    state.data.utxos.fetching = !(state.data.utxos.fetching)
   },
 
   retrievedUTXOS(state, utxoData) {
@@ -114,8 +114,19 @@ const actions = {
     commit
   }, address) {
     commit('fetchingUTXOS')
-    let utxoData = await getUTXOS(address)
-    commit('retrievedUTXOS', utxoData)
+    try {
+      let response = await getUTXOS(address)
+      let utxoData = await response.json()
+      commit('fetchingUTXOS')
+      commit('retrievedUTXOS', utxoData)
+    } catch (err) {
+      console.log(err)
+      let utxoData = []
+      commit('fetchingUTXOS')
+      commit('retrievedUTXOS', utxoData)
+    }
+
+
   },
 
 }
