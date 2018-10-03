@@ -2,6 +2,7 @@ import bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
 import bip32 from 'bip32'
 import Constants from './constants'
+import network from './network'
 
 
 
@@ -29,4 +30,40 @@ function getAddress(node, network) {
     pubkey: node.publicKey,
     network: network
   }).address
+}
+
+
+
+// 
+const send = (btc, address, changeAddress, fee, password, utxos, wif) => {
+
+  const satoshis = Math.round(btc * Constants.Bitcoin.Satoshis);
+
+  const network = network.current;
+
+  const txb = new bitcoin.TransactionBuilder(network);
+
+  let current = 0;
+  for (const utx of utxos) {
+
+    txb.addInput(utx.tx_hash_big_endian, utx.tx_output_n);
+
+    current += utx.value;
+    if (current >= (satoshis + fee)) break;
+  }
+
+  txb.addOutput(address, satoshis);
+
+  const change = current - (satoshis + fee);
+  if (change) txb.addOutput(this.address, change);
+
+
+  // const wif = this.__password ? this.readDecrypted(password) : this.wif;
+  const key = bitcoin.ECPair.fromWIF(wif, network);
+
+  txb.sign(0, key);
+
+  const raw = txb.build().toHex();
+
+  return network.api.broadcast(raw);
 }

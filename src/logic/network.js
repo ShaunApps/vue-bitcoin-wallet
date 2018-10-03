@@ -41,3 +41,15 @@ const getTransactions = (addresses) => {
     return Array.isArray(result.txs) ? result.txs : [];
   });
 };
+
+export default {
+  current: c_network,
+  name: env.network,
+  api: {
+    getPrice: getPrice,
+    getFee: getFee,
+    broadcast: broadcast,
+    getUTXOS: getUTXOS,
+    getTransactions: getTransactions,
+  }
+};

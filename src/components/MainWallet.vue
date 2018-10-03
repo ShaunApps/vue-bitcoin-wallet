@@ -8,6 +8,7 @@
 
   
         </b-navbar>
+        <b-table striped hover></b-table>
     </div>
 </template>
 
