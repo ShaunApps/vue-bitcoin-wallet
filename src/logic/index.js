@@ -2,7 +2,9 @@ import bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
 import bip32 from 'bip32'
 import Constants from './constants'
-import network from './network'
+import {
+  current
+} from './network'
 
 
 
@@ -34,36 +36,36 @@ function getAddress(node, network) {
 
 
 
-// 
-const send = (btc, address, changeAddress, fee, password, utxos, wif) => {
 
-  const satoshis = Math.round(btc * Constants.Bitcoin.Satoshis);
+// const send = (btc, address, changeAddress, fee, password, utxos, wif) => {
 
-  const network = network.current;
+//   const satoshis = Math.round(btc * Constants.Bitcoin.Satoshis);
 
-  const txb = new bitcoin.TransactionBuilder(network);
+//   const network = network.current;
 
-  let current = 0;
-  for (const utx of utxos) {
+//   const txb = new bitcoin.TransactionBuilder(network);
 
-    txb.addInput(utx.tx_hash_big_endian, utx.tx_output_n);
+//   let current = 0;
+//   for (const utx of utxos) {
 
-    current += utx.value;
-    if (current >= (satoshis + fee)) break;
-  }
+//     txb.addInput(utx.tx_hash_big_endian, utx.tx_output_n);
 
-  txb.addOutput(address, satoshis);
+//     current += utx.value;
+//     if (current >= (satoshis + fee)) break;
+//   }
 
-  const change = current - (satoshis + fee);
-  if (change) txb.addOutput(this.address, change);
+//   txb.addOutput(address, satoshis);
+
+//   const change = current - (satoshis + fee);
+//   if (change) txb.addOutput(this.address, change);
 
 
-  // const wif = this.__password ? this.readDecrypted(password) : this.wif;
-  const key = bitcoin.ECPair.fromWIF(wif, network);
+//   // const wif = this.__password ? this.readDecrypted(password) : this.wif;
+//   const key = bitcoin.ECPair.fromWIF(wif, network);
 
-  txb.sign(0, key);
+//   txb.sign(0, key);
 
-  const raw = txb.build().toHex();
+//   const raw = txb.build().toHex();
 
-  return network.api.broadcast(raw);
-}
+//   return network.api.broadcast(raw);
+// }

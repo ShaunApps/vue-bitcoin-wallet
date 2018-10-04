@@ -1,14 +1,14 @@
 <template>
     <div>
       <b-container>
-        <b-row class="text-center">
-          <b-col></b-col>
-          <b-col cols="8">
             <div class="wallet-container">
-              <h1>
+              <div class="welcome-contents">
+                <h1>
                   Welcome to my Bitcoin Wallet
-              </h1>
-              <div>
+                </h1>
+              </div>
+              <!-- modal for passphrase creation -->
+              <div class="modal-button-wrapper">
                 <b-btn v-b-modal.modal1 variant="primary">Create New Wallet</b-btn>
                 <b-modal 
                   id="modal1" 
@@ -20,18 +20,23 @@
                   <textarea v-model="generatedPhrase" v-bind:placeholder="generatedPhrase"></textarea>
                 </b-modal>
               </div>
-              <b-card  bg-variant="dark" text-variant="white" title="Log in to your wallet">
-              <b-form-input v-model="enteredPhrase"
-                        type="text"
-                        placeholder="Enter your 12-word passphrase"></b-form-input>
-              </b-card>
+              <!-- log in for passphrase -->
+              <div class="login-form-wrapper">
+                <b-card  bg-variant="dark" text-variant="white" title="Log in to your wallet">
+                  <b-form>
+                    <b-form-input v-model="enteredPhrase"
+                            type="password"
+                            placeholder="Enter your 12-word passphrase"></b-form-input>
+                    <b-input-group-append>
+                    <b-button type="submit" variant="primary">Open Wallet</b-button>
+                    </b-input-group-append>
+                  </b-form>
+                </b-card>
+                
+              </div>
             </div>
-         </b-col>
-          <b-col></b-col>
-        </b-row>
       </b-container>
     </div>
-
 </template>
 
 
@@ -77,5 +82,17 @@ textarea {
   margin-top: 150px;
   display: flex;
   flex-direction: column;
+}
+
+.welcome-contents {
+  margin: 25px;
+}
+
+.modal-button-wrapper {
+  margin: 25px;
+}
+
+.login-form-wrapper {
+  margin: 25px;
 }
 </style>
