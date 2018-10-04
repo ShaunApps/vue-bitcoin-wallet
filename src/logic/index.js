@@ -36,6 +36,9 @@ function getAddress(node, network) {
 
 
 
+const toSatoshis = (btc) => {
+  Math.round(btc * Constants.Bitcoin.Satoshis)
+}
 
 // const send = (btc, address, changeAddress, fee, password, utxos, wif) => {
 

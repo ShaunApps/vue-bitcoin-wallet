@@ -23,9 +23,10 @@
               <!-- log in for passphrase -->
               <div class="login-form-wrapper">
                 <b-card  bg-variant="dark" text-variant="white" title="Log in to your wallet">
-                  <b-form>
+                  <b-form @submit="onSubmit">
                     <b-form-input v-model="enteredPhrase"
                             type="password"
+                            :state="bip39State"
                             placeholder="Enter your 12-word passphrase"></b-form-input>
                     <b-input-group-append>
                     <b-button type="submit" variant="primary">Open Wallet</b-button>
@@ -42,12 +43,19 @@
 
 <script>
 import { generateNewBip39, generateAddress } from "../logic/index";
+import bip39 from "bip39";
+
 export default {
   data() {
     return {
       generatedPhrase: generateNewBip39(),
       enteredPhrase: ""
     };
+  },
+  computed: {
+    bip39State() {
+      return bip39.validateMnemonic(this.enteredPhrase);
+    }
   },
   methods: {
     handleOk(evt) {
@@ -64,9 +72,11 @@ export default {
     },
     onSubmit(e) {
       e.preventDefault();
-      let address = generateAddress(this.phrase);
-      this.$store.dispatch("savePassPhrase", this.enteredPhrase);
-      this.$store.dispatch("saveAddress", address);
+      if (bip39.validateMnemonic(this.enteredPhrase)) {
+        let address = generateAddress(this.enteredPhrase);
+        this.$store.dispatch("savePassPhrase", this.enteredPhrase);
+        this.$store.dispatch("saveAddress", address);
+      }
     }
   }
 };
