@@ -1,20 +1,32 @@
 <template>
     <div id="main">
         <b-navbar toggleable="md" type="dark" variant="info">
-
-
         <b-navbar-brand href="#">Vue.js Bitcoin Wallet</b-navbar-brand>
-        
-
-  
         </b-navbar>
+        <b-container>
+          <div class="wallet-card">
+            <b-card header="Wallet Data"
+                    bg-variant="dark" 
+                    text-variant="white"
+                    align="left"
+                    style="max-width: 60rem;"
+                    class="mb-2">
+              <p class="card-text">1.2 BTC</p>
+              <p class="card-text">$7500</p>
+              <CreateTransactionModal />
+            </b-card>
+          </div>
+        </b-container>
         <b-table striped hover></b-table>
     </div>
 </template>
 
 <script>
 import { generateNewBip39, generateAddress } from "../logic/index";
+import CreateTransactionModal from "./main-wallet-components/CreateTransactionModal";
+
 export default {
+  components: { CreateTransactionModal },
   data() {
     return {
       computed: {
@@ -30,3 +42,8 @@ export default {
   }
 };
 </script>
+<style>
+.wallet-card {
+  margin: 15px;
+}
+</style>

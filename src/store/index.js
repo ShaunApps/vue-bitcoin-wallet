@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Wallet from '../logic/wallet.class'
 
 import {
   loadState,
   saveState
 } from '../localStorage'
-import {
-  getUTXOS
-} from '../logic/network'
+import bnet from '../logic/network'
 
 Vue.use(Vuex)
 
@@ -16,6 +15,7 @@ Vue.use(Vuex)
 const state = {
   bip39phrase: '',
   address: '',
+  wallets: {},
   data: {
     utxos: {
       fetching: false,
@@ -115,7 +115,7 @@ const actions = {
   }, address) {
     commit('fetchingUTXOS')
     try {
-      let response = await getUTXOS(address)
+      let response = await bnet.api.getUTXOS(address)
       let utxoData = await response.json()
       commit('fetchingUTXOS')
       commit('retrievedUTXOS', utxoData)
@@ -128,6 +128,12 @@ const actions = {
 
 
   },
+
+  buildWallet({
+    commit
+  }, phrase) {
+    const wallet = Wallet.create(mnemonic);
+  }
 
 }
 
