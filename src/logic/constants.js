@@ -1,11 +1,11 @@
 export default {
   Bitcoin: {
     Decimals: 8,
-    Satoshis: 100000000,
+    Satoshis: 100000000
   },
   Networks: {
     Testnet: 'testnet',
-    Bitcoin: 'bitcoin',
+    Bitcoin: 'bitcoin'
   },
   Transactions: {
     AverageBytes: 255
@@ -17,14 +17,14 @@ export default {
     TransactionSubmitted: 'Transaction Submitted',
     NoFreeOutputs: 'No free outputs to spend',
     Fragments: {
-      MinimumFeeNotMet: 'min relay fee not met',
-    },
+      MinimumFeeNotMet: 'min relay fee not met'
+    }
   },
   Messages: {
     Wallet: {
       Created: 'Your wallet has been created and saved!',
       Mnemonic: 'Store this sequence safely',
-      Failed: 'A wallet could not be created at this moment',
+      Failed: 'A wallet could not be created at this moment'
     },
     Transactions: {
       NOTSent: 'Transaction could not be sent',
@@ -34,4 +34,4 @@ export default {
       FeeNotMet: 'A fee to process this transaction was not provided'
     }
   }
-};
+}

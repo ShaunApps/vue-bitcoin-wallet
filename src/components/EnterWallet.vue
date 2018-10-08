@@ -65,17 +65,13 @@ export default {
     },
     // below needs refractoring
     save: function() {
-      let address = generateAddress(this.generatedPhrase);
       this.$store.dispatch("savePassPhrase", this.generatedPhrase);
-      this.$store.dispatch("saveAddress", address);
       this.$refs.modal.hide();
     },
     onSubmit(e) {
       e.preventDefault();
       if (bip39.validateMnemonic(this.enteredPhrase)) {
-        let address = generateAddress(this.enteredPhrase);
         this.$store.dispatch("savePassPhrase", this.enteredPhrase);
-        this.$store.dispatch("saveAddress", address);
       }
     }
   }

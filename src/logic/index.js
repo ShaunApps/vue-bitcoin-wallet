@@ -15,7 +15,6 @@ export const generateNewBip39 = () => {
 }
 
 export const generateAddress = (mnemonic) => {
-  console.log('mneomic: ' + mnemonic);
   const seed = bip39.mnemonicToSeed(mnemonic);
   const root = bip32.fromSeed(seed);
 
@@ -27,7 +26,7 @@ export const generateAddress = (mnemonic) => {
 
 
 
-function getAddress(node, network) {
+export const getAddress = (node, network) => {
   return bitcoin.payments.p2pkh({
     pubkey: node.publicKey,
     network: network
@@ -39,36 +38,3 @@ function getAddress(node, network) {
 const toSatoshis = (btc) => {
   Math.round(btc * Constants.Bitcoin.Satoshis)
 }
-
-// const send = (btc, address, changeAddress, fee, password, utxos, wif) => {
-
-//   const satoshis = Math.round(btc * Constants.Bitcoin.Satoshis);
-
-//   const network = network.current;
-
-//   const txb = new bitcoin.TransactionBuilder(network);
-
-//   let current = 0;
-//   for (const utx of utxos) {
-
-//     txb.addInput(utx.tx_hash_big_endian, utx.tx_output_n);
-
-//     current += utx.value;
-//     if (current >= (satoshis + fee)) break;
-//   }
-
-//   txb.addOutput(address, satoshis);
-
-//   const change = current - (satoshis + fee);
-//   if (change) txb.addOutput(this.address, change);
-
-
-//   // const wif = this.__password ? this.readDecrypted(password) : this.wif;
-//   const key = bitcoin.ECPair.fromWIF(wif, network);
-
-//   txb.sign(0, key);
-
-//   const raw = txb.build().toHex();
-
-//   return network.api.broadcast(raw);
-// }

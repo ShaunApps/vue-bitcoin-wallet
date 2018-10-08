@@ -14,8 +14,7 @@ Vue.use(Vuex)
 // each Vuex instance is just a single state tree.
 const state = {
   bip39phrase: '',
-  address: '',
-  wallets: {},
+  wallet: {},
   data: {
     utxos: {
       fetching: false,
@@ -58,6 +57,10 @@ const mutations = {
     state.address = address;
     saveState(state, 'address', state.address)
 
+  },
+
+  buildWallet(state, wallet) {
+    state.wallet = wallet.toObject()
   },
 
   /* 
@@ -129,11 +132,22 @@ const actions = {
 
   },
 
+  /* 
+    ******************
+    BUILD WALLET ACTIONS
+    ******************
+  */
+
   buildWallet({
     commit
   }, phrase) {
-    const wallet = Wallet.create(mnemonic);
-  }
+    const wallet = Wallet.create(phrase)
+    commit('buildWallet', wallet)
+  },
+
+  // updateWallet({commit}) {
+
+  // }
 
 }
 
@@ -141,7 +155,10 @@ const actions = {
 const getters = {
   walletPPExists: state => state.bip39phrase ? true : false,
   fetchingUTXOS: state => state.data.utxos.fetching ? true : false,
-  getAddress: state => state.address
+  getPhrase: state => state.bip39phrase,
+  getWallet: state => state.wallet,
+  walletExists: state => state.wallet ? true : false,
+  getCurrentAddress: state => state.wallet.address
 }
 
 // A Vuex instance is created by combining the state, mutations, actions,

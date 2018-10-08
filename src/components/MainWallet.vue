@@ -11,8 +11,8 @@
                     align="left"
                     style="max-width: 60rem;"
                     class="mb-2">
+              <p class="card-text">Current address: </p>
               <p class="card-text">1.2 BTC</p>
-              <p class="card-text">$7500</p>
               <CreateTransactionModal />
             </b-card>
           </div>
@@ -32,13 +32,19 @@ export default {
       computed: {
         utxosListed() {
           return this.$store.getters.fetchingUTXOS;
+        },
+        currentAddress() {
+          let address = this.$store.getters.getCurrentAddress;
+          return address;
         }
       }
     };
   },
   created: function() {
-    let address = this.$store.getters.getAddress;
-    this.$store.dispatch("fetchUTXOS", address);
+    let mnemonic = this.$store.getters.getPhrase;
+    // this.$store.dispatch("fetchUTXOS", address);
+    this.$store.dispatch("buildWallet", mnemonic);
+    // dispatch build wallet
   }
 };
 </script>

@@ -1,21 +1,20 @@
 import bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
+import bip32 from 'bip32'
 import crypto from 'crypto'
 import Constants from './constants'
-
-
+import bnet from './network'
+import {
+  getAddress
+} from './index'
 
 class Wallet {
   constructor(info) {
-    this.__name = info.name;
-    this.__address = info.address;
-    this.__wif = info.wif;
-    this.__network = info.network;
-
-    this.__password = info.password || undefined;
-
-    this.__utxos = [];
-
+    this.__address = info.address
+    this.__wif = info.wif
+    this.__network = info.network
+    this.__password = info.password || undefined
+    this.__utxos = []
   }
 
   /**
@@ -126,18 +125,18 @@ class Wallet {
 
 
 
-  static get store() {
-    if (!Wallet.__store) Wallet.__store = new Database(Wallet.Defaults.DBFileName);
-    return Wallet.__store;
-  }
+  //   static get store() {
+  //     if (!Wallet.__store) Wallet.__store = new Database(Wallet.Defaults.DBFileName);
+  //     return Wallet.__store;
+  //   }
 
-  static all() {
-    return Wallet.store.find({
-      network: bnet.name
-    }).then((docs) => {
-      return docs.map(doc => new Wallet(doc));
-    });
-  }
+  //   static all() {
+  //     return Wallet.store.find({
+  //       network: bnet.name
+  //     }).then((docs) => {
+  //       return docs.map(doc => new Wallet(doc));
+  //     });
+  //   }
 
 
   static generate() {
@@ -149,10 +148,11 @@ class Wallet {
 
     const seed = bip39.mnemonicToSeed(mnemonic);
 
-    const master = bitcoin.HDNode.fromSeedBuffer(seed, bnet.current);
-    const derived = master.derivePath(Wallet.Defaults.Path);
-    const address = derived.getAddress();
-    const wif = derived.keyPair.toWIF();
+    const node = bip32.fromSeed(seed);
+    const derived = node.derivePath(Wallet.Defaults.Path);
+    const testnet = bitcoin.networks.testnet;
+    const address = getAddress(derived, testnet)
+    const wif = node.toWIF();
 
     return new Wallet({
       address: address,
@@ -166,7 +166,7 @@ class Wallet {
 
     return bnet.api.getUnspentOutputs(this.address).then((result) => {
       this.utxos = result.utxos;
-      this.emit(Wallet.Events.Updated);
+      this.emit(Wallet.Events.Updated); // modify this
       return true;
     }, (e) => {
       if (e.toString() === Constants.ReturnValues.NoFreeOutputs) {
@@ -175,15 +175,14 @@ class Wallet {
     });
   }
 
-  save() {
-    return Wallet.store.insert(this.toObject());
-  }
+  //   save() {
+  //     return Wallet.store.insert(this.toObject());
+  //   }
 
 
   toObject() {
 
     const obj = {
-      name: this.name,
       address: this.address,
       wif: this.wif,
       network: this.network,

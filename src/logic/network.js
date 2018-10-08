@@ -1,4 +1,5 @@
 import {
+  exchange,
   blockexplorer,
   pushtx
 } from 'blockchain.info';
@@ -44,11 +45,15 @@ const getTransactions = (addresses) => {
   });
 };
 
+const getPrice = () => {
+  exchange.getTicker('USD')
+}
+
 export default {
   current: c_network,
   name: env.network,
   api: {
-    // getPrice: getPrice,
+    getPrice: getPrice,
     // getFee: getFee,
     // broadcast: broadcast,
     getUTXOS: getUTXOS,
