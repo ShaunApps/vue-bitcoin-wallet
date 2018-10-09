@@ -7,6 +7,9 @@ import {
   saveState
 } from '../localStorage'
 import bnet from '../logic/network'
+import {
+  send
+} from '../logic/index'
 
 Vue.use(Vuex)
 
@@ -19,13 +22,22 @@ const state = {
   data: {
     utxos: {
       fetching: false,
-      data: {}
+      data: []
     },
     price: {
       fetching: false,
       data: ""
+    },
+    fee: {
+      fetching: false,
+      data: 10000
+    },
+    transactions: {
+      fetching: false,
+      data: []
     }
-  }
+  },
+  utxos: []
 
 }
 
@@ -84,6 +96,7 @@ const mutations = {
 
   retrievedUTXOS(state, utxoData) {
     state.data.utxos.data = utxoData
+    state.utxos = utxoData.utxos
   },
 
   fetchingPrice(state) {
@@ -92,8 +105,33 @@ const mutations = {
 
   retrievedPrice(state, price) {
     state.data.price.data = price
-  }
+  },
 
+  fetchingFee(state) {
+    state.data.fee.fetching = !(state.data.fee.fetching)
+  },
+
+  retrievedFee(state, fee) {
+    state.data.fee.data = fee
+  },
+
+  /* 
+    ******************
+    TRANSACTION MUTATIONS
+    ******************
+  */
+
+  sendingTransaction(state) {
+    state.data.transactions.fetching = !(state.data.transactions.fetching)
+  },
+
+  sentTransaction(state) {
+
+  },
+
+  transactionError(state) {
+
+  }
 }
 
 // actions are functions that cause side effects and can involve
@@ -135,8 +173,7 @@ const actions = {
   }, address) {
     commit('fetchingUTXOS')
     try {
-      let response = await bnet.api.getUTXOS(address)
-      let utxoData = await response.json()
+      let utxoData = await bnet.api.getUTXOS(address)
       commit('fetchingUTXOS')
       commit('retrievedUTXOS', utxoData)
     } catch (err) {
@@ -145,8 +182,6 @@ const actions = {
       commit('fetchingUTXOS')
       commit('retrievedUTXOS', utxoData)
     }
-
-
   },
 
   async getPriceUSD({
@@ -156,10 +191,47 @@ const actions = {
     try {
       let response = await bnet.api.getPrice()
       let price = response["USD"]["last"]
+      commit('fetchingPrice')
       commit('retrievedPrice', price)
+
     } catch (err) {
       console.log(err)
     }
+  },
+
+  async getFee({
+    commit
+  }) {
+    commit('fetchingFee')
+    try {
+      let response = await bnet.api.getFee()
+      commit('fetchingFee')
+      commit('retrievedFee', response)
+    } catch (err) {
+      console.log(err)
+    }
+  },
+
+  /* 
+    ******************
+    TRANSACTION ACTIONS
+    ******************
+  */
+
+  async createSend({
+    commit
+  }, payload) {
+    commit('sendingTransaction')
+    try {
+      await send(payload)
+      commit('sentTransaction')
+    } catch (err) {
+      commit('transactionError', err)
+      console.log(err)
+    }
+
+
+
   },
 
   /* 
@@ -188,6 +260,7 @@ const actions = {
 const getters = {
   walletPPExists: state => state.bip39phrase ? true : false,
   fetchingUTXOS: state => state.data.utxos.fetching ? true : false,
+  getUTX0S: state => state.utxos,
   getPhrase: state => state.bip39phrase,
   getWallet: state => state.wallet,
   walletExists: state => state.wallet ? true : false,

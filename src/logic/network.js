@@ -30,11 +30,22 @@ switch (env.network) {
 
 
 const getFee = () => {
-  return fetch(Constants.Endpoints.BitcoinFees).then((response) => {
-    return (response.data.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis;
-  }).catch(() => {
-    return 0;
-  });
+  const fee = fetch(Constants.Endpoints.BitcoinFees).then(response => response)
+    .then(response => (response.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis);
+  console.log('response: ' + fee);
+  // console.log('response ff: ' + response.fastestFee);
+  // const fee = (response.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis;
+  return fee
+  // const fee = fetch(Constants.Endpoints.BitcoinFees).then((response) => {
+  //   console.log('response: ' + response.json());
+  //   return (response.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis;
+  // });
+  // return fee;
+  // return fetch(Constants.Endpoints.BitcoinFees).then((response) => {
+  //   return (response.data.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis;
+  // }).catch(() => {
+  //   return 0;
+  // });
 };
 
 const broadcast = tx => c_pushtx(tx).then(result => result === Constants.ReturnValues.TransactionSubmitted);
@@ -62,23 +73,13 @@ const getPrice = () => {
   return price
 }
 
-const getUnspentOutputs = (address) => {
-  return c_blockexplorer.getUnspentOutputs(address).then((result) => {
-    return {
-      utxos: result.unspent_outputs,
-      coins: result.unspent_outputs.reduce((a, c) => a + c.value, 0) / Constants.Bitcoin.Satoshis
-    };
-  });
-};
-
 export default {
   current: c_network,
   name: env.network,
   api: {
     getPrice: getPrice,
-    // getFee: getFee,
-    // broadcast: broadcast,
-    getUnspentOutputs: getUnspentOutputs,
+    getFee: getFee,
+    broadcast: broadcast,
     getUTXOS: getUTXOS,
     getTransactions: getTransactions,
   }

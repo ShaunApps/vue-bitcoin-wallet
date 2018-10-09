@@ -1,6 +1,6 @@
 <template>
     <div id="main">
-        <b-navbar toggleable="md" type="dark" variant="info">
+        <b-navbar class="mainNav" type="dark" variant="info">
           <b-navbar-brand href="#">Vue.js Bitcoin Wallet</b-navbar-brand>
           <b-navbar-nav right>
             <b-nav-item right>BTC-USD: ${{currentPrice}}</b-nav-item>
@@ -16,7 +16,9 @@
                     style="max-width: 60rem;"
                     class="mb-2">
               <p class="card-text">Current address: {{currentAddress}}</p>
-              <CreateTransactionModal />
+              <p class="card-text">BTC Balance: {{coins}}</p>
+              <p class="card-text">USD Balance: ${{usdBalance}}</p>
+              <CreateTransactionModal text-variant="dark" />
             </b-card>
           </div>
         </b-container>
@@ -39,6 +41,15 @@ export default {
     },
     currentPrice() {
       return this.$store.state.data.price.data;
+    },
+    coins() {
+      return this.$store.state.data.utxos.data.coins;
+    },
+    usdBalance() {
+      return (
+        this.$store.state.data.price.data *
+        this.$store.state.data.utxos.data.coins
+      );
     }
   },
   created: function() {
@@ -46,12 +57,16 @@ export default {
     let address = this.$store.state.address;
     this.$store.dispatch("fetchUTXOS", address);
     this.$store.dispatch("getPriceUSD");
+    // this.$store.dispatch("getFee");
     // this.$store.dispatch("buildWallet", mnemonic);
     // dispatch build wallet
   }
 };
 </script>
 <style>
+.mainNav {
+  margin: 0px;
+}
 .wallet-card {
   margin: 15px;
 }

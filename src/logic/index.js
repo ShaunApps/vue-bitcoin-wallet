@@ -33,16 +33,21 @@ export const getAddress = (node, network) => {
 
 
 
-const toSatoshis = (btc) => {
-  Math.round(btc * Constants.Bitcoin.Satoshis)
-}
+// const toSatoshis = (btc) => {
+//   Math.round(btc * Constants.Bitcoin.Satoshis)
+// }
 
 
-export const send = (btc, address, fee, utxos) => {
+export const send = ({
+  btc,
+  address,
+  fee,
+  utxos
+}) => {
 
   const satoshis = Math.round(btc * Constants.Bitcoin.Satoshis);
 
-  const network = bnet.current;
+  const network = bitcoin.networks.testnet;
 
   const txb = new bitcoin.TransactionBuilder(network);
 
@@ -62,16 +67,17 @@ export const send = (btc, address, fee, utxos) => {
   if (change) txb.addOutput(changeAddress, change);
 
 
-  // const wif = this.__password ? this.readDecrypted(password) : this.wif;
+  const seed = bip39.mnemonicToSeed(localStorage.bip39phrase);
+  const root = bip32.fromSeed(seed, network);
+  const child = root.derivePath("m/0'/0/0");
+
+  // const wif = bip32.fromSeed(seed, network).toWIF();
   // const key = bitcoin.ECPair.fromWIF(wif, network);
 
-  const seed = bip39.mnemonicToSeed(localStorage.bip39phrase);
-  const wif = bip32.fromSeed(seed).toWIF();
-  const key = bitcoin.ECPair.fromWIF(wif, network);
-
-  txb.sign(0, key);
+  txb.sign(0, child);
 
   const raw = txb.build().toHex();
+  console.log(raw);
 
   return bnet.api.broadcast(raw);
 }
