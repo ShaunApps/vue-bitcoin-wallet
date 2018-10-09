@@ -76,14 +76,6 @@ const mutations = {
 
   },
 
-  buildWallet(state, wallet) {
-    state.wallet = wallet.toObject()
-  },
-
-  updateWallet(state, wallet) {
-    state.wallet = wallet.toObject()
-  },
-
   /* 
     ******************
     UTXOS & PRICE MUTATIONS
@@ -131,7 +123,22 @@ const mutations = {
 
   transactionError(state) {
 
+  },
+
+  gettingTransactions(state) {
+    state.data.transactions.fetching = !(state.data.transactions.fetching)
+  },
+
+  gotTransactions(state, transactions) {
+    state.data.transactions.data.push(transactions)
+  },
+
+  getTransactionsError(state, err) {
+
   }
+
+
+
 }
 
 // actions are functions that cause side effects and can involve
@@ -232,6 +239,19 @@ const actions = {
 
 
 
+  },
+
+  async getTransactions({
+    commit
+  }, payload) {
+    commit("gettingTransactions")
+    try {
+      const transactions = await bnet.api.getTransactions(payload)
+      commit('gotTransactions', transactions)
+    } catch (err) {
+      commit('getTransactionsError', err)
+      console.log(err)
+    }
   },
 
   /* 

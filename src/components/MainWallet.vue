@@ -22,16 +22,20 @@
             </b-card>
           </div>
         </b-container>
-        <b-table striped hover></b-table>
+        <!-- <div class="transactions-div">
+          <Transactions />
+        </div> -->
+        
     </div>
 </template>
 
 <script>
 import { generateNewBip39, generateAddress } from "../logic/index";
 import CreateTransactionModal from "./main-wallet-components/CreateTransactionModal";
+import Transactions from "./main-wallet-components/Transactions";
 
 export default {
-  components: { CreateTransactionModal },
+  components: { CreateTransactionModal, Transactions },
   data() {
     return {};
   },
@@ -43,23 +47,21 @@ export default {
       return this.$store.state.data.price.data;
     },
     coins() {
-      return this.$store.state.data.utxos.data.coins;
+      return this.$store.state.data.utxos.data.coins || 0;
     },
     usdBalance() {
       return (
         this.$store.state.data.price.data *
-        this.$store.state.data.utxos.data.coins
+          this.$store.state.data.utxos.data.coins || 0
       );
     }
   },
   created: function() {
-    // let mnemonic = this.$store.getters.getPhrase;
     let address = this.$store.state.address;
     this.$store.dispatch("fetchUTXOS", address);
     this.$store.dispatch("getPriceUSD");
+    // this.$store.dispatch("getTransactions", address);
     // this.$store.dispatch("getFee");
-    // this.$store.dispatch("buildWallet", mnemonic);
-    // dispatch build wallet
   }
 };
 </script>
@@ -69,5 +71,9 @@ export default {
 }
 .wallet-card {
   margin: 15px;
+}
+
+.transactions-div {
+  padding-bottom: 15px;
 }
 </style>

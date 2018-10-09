@@ -33,19 +33,7 @@ const getFee = () => {
   const fee = fetch(Constants.Endpoints.BitcoinFees).then(response => response)
     .then(response => (response.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis);
   console.log('response: ' + fee);
-  // console.log('response ff: ' + response.fastestFee);
-  // const fee = (response.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis;
   return fee
-  // const fee = fetch(Constants.Endpoints.BitcoinFees).then((response) => {
-  //   console.log('response: ' + response.json());
-  //   return (response.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis;
-  // });
-  // return fee;
-  // return fetch(Constants.Endpoints.BitcoinFees).then((response) => {
-  //   return (response.data.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis;
-  // }).catch(() => {
-  //   return 0;
-  // });
 };
 
 const broadcast = tx => c_pushtx(tx).then(result => result === Constants.ReturnValues.TransactionSubmitted);
@@ -61,9 +49,19 @@ const getUTXOS = (address) => {
   });
 };
 
-const getTransactions = (addresses) => {
-  return c_blockexplorer.getMultiAddress(addresses, {}).then((result) => {
-    return Array.isArray(result.txs) ? result.txs : [];
+// const getTransactions = ({
+//   address
+// }) => {
+//   return c_blockexplorer.getAddress(address, {}).then((result) => {
+//     return Array.isArray(result.txs) ? result.txs : [];
+//   });
+// };
+
+const getTransactions = ({
+  address
+}) => {
+  return c_blockexplorer.getAddress(address, {}).then((result) => {
+    return result.txs;
   });
 };
 

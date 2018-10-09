@@ -22,8 +22,6 @@ export const generateAddress = (mnemonic) => {
   return address;
 }
 
-
-
 export const getAddress = (node, network) => {
   return bitcoin.payments.p2pkh({
     pubkey: node.publicKey,
