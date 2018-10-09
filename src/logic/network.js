@@ -29,6 +29,17 @@ switch (env.network) {
 }
 
 
+const getFee = () => {
+  return fetch(Constants.Endpoints.BitcoinFees).then((response) => {
+    return (response.data.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis;
+  }).catch(() => {
+    return 0;
+  });
+};
+
+const broadcast = tx => c_pushtx(tx).then(result => result === Constants.ReturnValues.TransactionSubmitted);
+
+
 
 const getUTXOS = (address) => {
   return c_blockexplorer.getUnspentOutputs(address).then((result) => {
@@ -46,8 +57,19 @@ const getTransactions = (addresses) => {
 };
 
 const getPrice = () => {
-  exchange.getTicker('USD')
+  const URL = `https://blockchain.info/ticker`
+  const price = fetch(URL).then(response => response.json());
+  return price
 }
+
+const getUnspentOutputs = (address) => {
+  return c_blockexplorer.getUnspentOutputs(address).then((result) => {
+    return {
+      utxos: result.unspent_outputs,
+      coins: result.unspent_outputs.reduce((a, c) => a + c.value, 0) / Constants.Bitcoin.Satoshis
+    };
+  });
+};
 
 export default {
   current: c_network,
@@ -56,6 +78,7 @@ export default {
     getPrice: getPrice,
     // getFee: getFee,
     // broadcast: broadcast,
+    getUnspentOutputs: getUnspentOutputs,
     getUTXOS: getUTXOS,
     getTransactions: getTransactions,
   }

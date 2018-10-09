@@ -14,11 +14,16 @@ Vue.use(Vuex)
 // each Vuex instance is just a single state tree.
 const state = {
   bip39phrase: '',
+  address: '',
   wallet: {},
   data: {
     utxos: {
       fetching: false,
       data: {}
+    },
+    price: {
+      fetching: false,
+      data: ""
     }
   }
 
@@ -63,9 +68,13 @@ const mutations = {
     state.wallet = wallet.toObject()
   },
 
+  updateWallet(state, wallet) {
+    state.wallet = wallet.toObject()
+  },
+
   /* 
     ******************
-    UTXOS MUTATIONS
+    UTXOS & PRICE MUTATIONS
     ******************
   */
 
@@ -75,6 +84,14 @@ const mutations = {
 
   retrievedUTXOS(state, utxoData) {
     state.data.utxos.data = utxoData
+  },
+
+  fetchingPrice(state) {
+    state.data.price.fetching = !(state.data.price.fetching)
+  },
+
+  retrievedPrice(state, price) {
+    state.data.price.data = price
   }
 
 }
@@ -110,7 +127,7 @@ const actions = {
 
   /* 
     ******************
-    UTXOS ACTIONS
+    UTXOS & PRICE ACTIONS
     ******************
   */
   async fetchUTXOS({
@@ -132,17 +149,33 @@ const actions = {
 
   },
 
+  async getPriceUSD({
+    commit
+  }) {
+    commit('fetchingPrice')
+    try {
+      let response = await bnet.api.getPrice()
+      let price = response["USD"]["last"]
+      commit('retrievedPrice', price)
+    } catch (err) {
+      console.log(err)
+    }
+  },
+
   /* 
     ******************
     BUILD WALLET ACTIONS
     ******************
   */
 
-  buildWallet({
+  async buildWallet({
     commit
   }, phrase) {
     const wallet = Wallet.create(phrase)
     commit('buildWallet', wallet)
+    await wallet.update()
+    commit('updateWallet', wallet)
+
   },
 
   // updateWallet({commit}) {
@@ -158,7 +191,9 @@ const getters = {
   getPhrase: state => state.bip39phrase,
   getWallet: state => state.wallet,
   walletExists: state => state.wallet ? true : false,
-  getCurrentAddress: state => state.wallet.address
+  getCurrentAddress: state => state.wallet.address,
+  getAddress: state => state.address,
+  getPrice: state => state.data.price.data
 }
 
 // A Vuex instance is created by combining the state, mutations, actions,

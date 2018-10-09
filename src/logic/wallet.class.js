@@ -149,7 +149,8 @@ class Wallet {
     const seed = bip39.mnemonicToSeed(mnemonic);
 
     const node = bip32.fromSeed(seed);
-    const derived = node.derivePath(Wallet.Defaults.Path);
+    // const derived = node.derivePath(Wallet.Defaults.Path);
+    const derived = node.derivePath("m/0'/0/0");
     const testnet = bitcoin.networks.testnet;
     const address = getAddress(derived, testnet)
     const wif = node.toWIF();
@@ -166,12 +167,10 @@ class Wallet {
 
     return bnet.api.getUnspentOutputs(this.address).then((result) => {
       this.utxos = result.utxos;
-      this.emit(Wallet.Events.Updated); // modify this
+      console.log("it worked: " + this.utxos)
       return true;
     }, (e) => {
-      if (e.toString() === Constants.ReturnValues.NoFreeOutputs) {
-        this.emit(Wallet.Events.Updated);
-      }
+      console.log(e)
     });
   }
 

@@ -1,7 +1,11 @@
 <template>
     <div id="main">
         <b-navbar toggleable="md" type="dark" variant="info">
-        <b-navbar-brand href="#">Vue.js Bitcoin Wallet</b-navbar-brand>
+          <b-navbar-brand href="#">Vue.js Bitcoin Wallet</b-navbar-brand>
+          <b-navbar-nav right>
+            <b-nav-item right>BTC-USD: ${{currentPrice}}</b-nav-item>
+  
+          </b-navbar-nav>
         </b-navbar>
         <b-container>
           <div class="wallet-card">
@@ -11,8 +15,7 @@
                     align="left"
                     style="max-width: 60rem;"
                     class="mb-2">
-              <p class="card-text">Current address: </p>
-              <p class="card-text">1.2 BTC</p>
+              <p class="card-text">Current address: {{currentAddress}}</p>
               <CreateTransactionModal />
             </b-card>
           </div>
@@ -28,22 +31,22 @@ import CreateTransactionModal from "./main-wallet-components/CreateTransactionMo
 export default {
   components: { CreateTransactionModal },
   data() {
-    return {
-      computed: {
-        utxosListed() {
-          return this.$store.getters.fetchingUTXOS;
-        },
-        currentAddress() {
-          let address = this.$store.getters.getCurrentAddress;
-          return address;
-        }
-      }
-    };
+    return {};
+  },
+  computed: {
+    currentAddress() {
+      return this.$store.state.address;
+    },
+    currentPrice() {
+      return this.$store.state.data.price.data;
+    }
   },
   created: function() {
-    let mnemonic = this.$store.getters.getPhrase;
-    // this.$store.dispatch("fetchUTXOS", address);
-    this.$store.dispatch("buildWallet", mnemonic);
+    // let mnemonic = this.$store.getters.getPhrase;
+    let address = this.$store.state.address;
+    this.$store.dispatch("fetchUTXOS", address);
+    this.$store.dispatch("getPriceUSD");
+    // this.$store.dispatch("buildWallet", mnemonic);
     // dispatch build wallet
   }
 };

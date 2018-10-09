@@ -2,9 +2,7 @@ import bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
 import bip32 from 'bip32'
 import Constants from './constants'
-import {
-  current
-} from './network'
+import bnet from './network'
 
 
 
@@ -37,4 +35,43 @@ export const getAddress = (node, network) => {
 
 const toSatoshis = (btc) => {
   Math.round(btc * Constants.Bitcoin.Satoshis)
+}
+
+
+export const send = (btc, address, fee, utxos) => {
+
+  const satoshis = Math.round(btc * Constants.Bitcoin.Satoshis);
+
+  const network = bnet.current;
+
+  const txb = new bitcoin.TransactionBuilder(network);
+
+  let current = 0;
+  for (const utx of utxos) {
+
+    txb.addInput(utx.tx_hash_big_endian, utx.tx_output_n);
+
+    current += utx.value;
+    if (current >= (satoshis + fee)) break;
+  }
+
+  txb.addOutput(address, satoshis);
+
+  const changeAddress = localStorage.address;
+  const change = current - (satoshis + fee);
+  if (change) txb.addOutput(changeAddress, change);
+
+
+  // const wif = this.__password ? this.readDecrypted(password) : this.wif;
+  // const key = bitcoin.ECPair.fromWIF(wif, network);
+
+  const seed = bip39.mnemonicToSeed(localStorage.bip39phrase);
+  const wif = bip32.fromSeed(seed).toWIF();
+  const key = bitcoin.ECPair.fromWIF(wif, network);
+
+  txb.sign(0, key);
+
+  const raw = txb.build().toHex();
+
+  return bnet.api.broadcast(raw);
 }

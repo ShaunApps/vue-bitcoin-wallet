@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <template v-if="existingWallet">
+    <template v-if="bip39phrase">
       <MainWallet/>
     </template>
     <template v-else>
@@ -18,6 +18,9 @@ export default {
   name: "App",
   components: { MainWallet, EnterWallet },
   computed: {
+    bip39phrase() {
+      return this.$store.getters.walletPPExists;
+    },
     existingWallet() {
       return this.$store.getters.walletExists;
     }
@@ -26,6 +29,7 @@ export default {
     // let passphrase = loadState();
     // loadState() not working, below seems to work
     this.$store.dispatch("loadPassPhrase", localStorage.bip39phrase);
+    this.$store.dispatch("loadAddress", localStorage.address);
   }
 };
 </script>
