@@ -125,20 +125,6 @@ class Wallet {
 
 
 
-  //   static get store() {
-  //     if (!Wallet.__store) Wallet.__store = new Database(Wallet.Defaults.DBFileName);
-  //     return Wallet.__store;
-  //   }
-
-  //   static all() {
-  //     return Wallet.store.find({
-  //       network: bnet.name
-  //     }).then((docs) => {
-  //       return docs.map(doc => new Wallet(doc));
-  //     });
-  //   }
-
-
   static generate() {
     return bip39.generateMnemonic();
   }
@@ -174,9 +160,9 @@ class Wallet {
     });
   }
 
-  //   save() {
-  //     return Wallet.store.insert(this.toObject());
-  //   }
+  save() {
+    return localStorage.setItem(wallet, (this.toObject()))
+  }
 
 
   toObject() {

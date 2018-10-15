@@ -130,7 +130,7 @@ const mutations = {
   },
 
   gotTransactions(state, transactions) {
-    state.data.transactions.data.push(transactions)
+    state.data.transactions.data = transactions
   },
 
   getTransactionsError(state, err) {
@@ -269,10 +269,6 @@ const actions = {
     commit('updateWallet', wallet)
 
   },
-
-  // updateWallet({commit}) {
-
-  // }
 
 }
 

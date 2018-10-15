@@ -18,6 +18,7 @@
                   <p>We have created a passphrase for you in the box below.
                   This passphrase lets you access your wallet and the funds it contains.</p>
                   <textarea v-model="generatedPhrase" v-bind:placeholder="generatedPhrase"></textarea>
+                  <b-alert show variant="danger">Make sure to write down your passphrase! If you lose this passphrase, you will lose access to your wallet forever.</b-alert>
                 </b-modal>
               </div>
               <!-- log in for passphrase -->

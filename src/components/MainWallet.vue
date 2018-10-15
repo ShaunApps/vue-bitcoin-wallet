@@ -44,7 +44,8 @@ export default {
       return this.$store.state.address;
     },
     currentPrice() {
-      return this.$store.state.data.price.data;
+      let price = this.$store.state.data.price.data;
+      return price;
     },
     coins() {
       return this.$store.state.data.utxos.data.coins || 0;
@@ -60,8 +61,6 @@ export default {
     let address = this.$store.state.address;
     this.$store.dispatch("fetchUTXOS", address);
     this.$store.dispatch("getPriceUSD");
-    // this.$store.dispatch("getTransactions", address);
-    // this.$store.dispatch("getFee");
   }
 };
 </script>

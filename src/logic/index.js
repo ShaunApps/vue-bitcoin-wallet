@@ -79,3 +79,7 @@ export const send = ({
 
   return bnet.api.broadcast(raw);
 }
+
+// export const rotateAddresses = () => {
+
+// }

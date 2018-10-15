@@ -16,7 +16,6 @@ export const loadState = () => {
 export const saveState = (state, key, item) => {
   try {
     localStorage.setItem(key, item);
-    // localStorage.setItem('address', state.address);
   } catch (err) {
     console.log(err);
   }

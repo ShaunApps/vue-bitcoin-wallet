@@ -30,8 +30,8 @@ switch (env.network) {
 
 
 const getFee = () => {
-  const fee = fetch(Constants.Endpoints.BitcoinFees).then(response => response)
-    .then(response => (response.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis);
+  const response = fetch(Constants.Endpoints.BitcoinFees).then(response => response.json())
+  const fee = (response.fastestFee * Constants.Transactions.AverageBytes) / Constants.Bitcoin.Satoshis;
   console.log('response: ' + fee);
   return fee
 };
@@ -57,13 +57,15 @@ const getUTXOS = (address) => {
 //   });
 // };
 
+
 const getTransactions = ({
   address
 }) => {
-  return c_blockexplorer.getAddress(address, {}).then((result) => {
-    return result.txs;
-  });
-};
+  const URL = `https://testnet.blockchain.info/rawaddr/${address}`
+  const data = fetch(URL).then(response => response.json())
+  return data.txs
+
+}
 
 const getPrice = () => {
   const URL = `https://blockchain.info/ticker`
